@@ -17,8 +17,7 @@ const UnlockSchema = new mongoose.Schema(
             type: Number
         },
         played: {
-            type: Number,
-            default: 0
+            type: Number
         }
     },
     {

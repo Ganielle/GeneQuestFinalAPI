@@ -30,7 +30,7 @@ exports.authlogin = async(req, res) => {
             const token = await encrypt(privateKey)
 
             await Users.findByIdAndUpdate({_id: user._id}, {$set: {token: token}}, { new: true })
-            .then(async () => {
+            .then(async (tempdata) => {
                 const payload = { id: user._id, username: user.username, status: user.status, token: token, auth: "player" }
 
                 let jwtoken = ""
@@ -44,7 +44,8 @@ exports.authlogin = async(req, res) => {
 
                 return res.json({message: "success", data: {
                     auth: "player",
-                    token: jwtoken
+                    token: jwtoken,
+                    gender: tempdata.gender
                 }})
             })
             .catch(err => res.status(400).json({ message: "bad-request2", data: "There's a problem with your account! There's a problem with your account! Please contact customer support for more details."  + err }))

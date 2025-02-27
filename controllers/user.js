@@ -5,7 +5,7 @@ const Score = require("../models/Score")
 const Stagescore = require("../models/Stagescore")
 
 exports.createuser = async (req, res) => {
-    const {username, password} = req.body
+    const {username, password, gender} = req.body
 
     if (!username){
         return res.status(400).json({message: "failed", data: "Please enter your username first"})
@@ -26,7 +26,7 @@ exports.createuser = async (req, res) => {
         return res.status(400).json({message: "failed", data: "User already exists"})
     }
 
-    const userdata = await Users.create({username: username, password: password})
+    const userdata = await Users.create({username: username, password: password, gender: gender})
     .then(data => data)
     .catch(err => {
         console.log(`There's a problem getting the list of users. Error ${err}`)
@@ -39,52 +39,45 @@ exports.createuser = async (req, res) => {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 1,
             stage: 1,
-            locked: 0
+            locked: 0,
+            played: 0
         },
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 1,
             stage: 2,
-            locked: 1
+            locked: 1,
+            played: 0
         },
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 1,
             stage: 3,
-            locked: 1
-        },
-        {
-            owner: new mongoose.Types.ObjectId(userdata._id),
-            level: 1,
-            stage: 4,
-            locked: 1
+            locked: 1,
+            played: 0
         },
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 2,
             stage: 1,
-            locked: 1
+            locked: 1,
+            played: 0
         },
         
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 2,
             stage: 2,
-            locked: 1
+            locked: 1,
+            played: 0
         },
         
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 2,
             stage: 3,
-            locked: 1
-        },
-        
-        {
-            owner: new mongoose.Types.ObjectId(userdata._id),
-            level: 2,
-            stage: 4,
-            locked: 1
+            locked: 1,
+            played: 0
         },
     ]
 
@@ -125,12 +118,6 @@ exports.createuser = async (req, res) => {
         },
         {
             owner: new mongoose.Types.ObjectId(userdata._id),
-            level: 1,
-            stage: 4,
-            score: 0
-        },
-        {
-            owner: new mongoose.Types.ObjectId(userdata._id),
             level: 2,
             stage: 1,
             score: 0
@@ -147,13 +134,6 @@ exports.createuser = async (req, res) => {
             owner: new mongoose.Types.ObjectId(userdata._id),
             level: 2,
             stage: 3,
-            score: 0
-        },
-        
-        {
-            owner: new mongoose.Types.ObjectId(userdata._id),
-            level: 2,
-            stage: 4,
             score: 0
         },
     ]

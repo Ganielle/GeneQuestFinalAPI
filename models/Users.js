@@ -24,6 +24,9 @@ const UsersSchema = new mongoose.Schema(
         auth: {
             type: String,
             index: true
+        },
+        gender:{
+            type: Number
         }
     },
     {
