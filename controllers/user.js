@@ -260,7 +260,7 @@ exports.unlockstages = async (req, res) => {
         return res.status(400).json({message: "bad-request", data: "There's a problem with the server. Please try again later"})
     })
 
-    if (level == 1 && stage >= 5){
+    if (level == 1 && stage >= 3){
         await Unlock.findOneAndUpdate({owner: new mongoose.Types.ObjectId(id), level: 2, stage: 1}, {locked: 0})
         .catch(err => {
             console.log(`There's a problem saving new unlock data for id: ${id}  level: ${level}  stage: ${stage}. Error: ${err}`)
