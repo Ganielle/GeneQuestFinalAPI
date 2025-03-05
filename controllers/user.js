@@ -5,7 +5,7 @@ const Score = require("../models/Score")
 const Stagescore = require("../models/Stagescore")
 
 exports.createuser = async (req, res) => {
-    const {username, password, gender} = req.body
+    const {username, password, gender, section} = req.body
 
     if (!username){
         return res.status(400).json({message: "failed", data: "Please enter your username first"})
@@ -13,7 +13,12 @@ exports.createuser = async (req, res) => {
     else if (!password){
         return res.status(400).json({message: "failed", data: "Please enter your password first"})
     }
-
+    else if (gender <= 0){
+        return res.status(400).json({message: "failed", data: "Please select your gender"})
+    }
+    else if (section <= 0){
+        return res.status(400).json({message: "failed", data: "Please select your section"})
+    }
     const existing = await Users.find({username: { $regex: new RegExp('^' + username + '$', 'i') }})
     .then(data => data)
     .catch(err => {
@@ -26,7 +31,7 @@ exports.createuser = async (req, res) => {
         return res.status(400).json({message: "failed", data: "User already exists"})
     }
 
-    const userdata = await Users.create({username: username, password: password, gender: gender})
+    const userdata = await Users.create({username: username, password: password, gender: gender, section: section})
     .then(data => data)
     .catch(err => {
         console.log(`There's a problem getting the list of users. Error ${err}`)

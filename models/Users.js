@@ -27,6 +27,9 @@ const UsersSchema = new mongoose.Schema(
         },
         gender:{
             type: Number
+        },
+        section:{
+            type: Number
         }
     },
     {

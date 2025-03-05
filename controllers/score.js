@@ -116,37 +116,42 @@ exports.getscore = async (req, res) => {
 exports.getleaderboard = async (req, res) => {
     const {id, username} = req.user
 
+    const {section} = req.query
+
     const result = await Scores.aggregate([
-        { 
-            $sort: { amount: -1 } // Sort by score (amount) in descending order
-        },
-        {
-            $group: {
-                _id: "$owner", // Group by the `owner` field (unique user)
-                maxAmount: { $first: "$amount" }, // Take the highest score for each user
-            }
-        },
         {
             $lookup: {
-                from: "users", // Assume `users` is the collection for user details
-                localField: "_id",
+                from: "users", // Join with the users collection
+                localField: "owner",
                 foreignField: "_id",
                 as: "ownerDetails"
             }
         },
+        { $unwind: "$ownerDetails" }, // Flatten the owner details
+        { 
+            $match: { "ownerDetails.section": parseInt(section) } // Filter users by section
+        },
+        { 
+            $sort: { amount: -1 } // Sort scores in descending order
+        },
         {
-            $unwind: "$ownerDetails" // Flatten the joined owner details
+            $group: {
+                _id: "$owner", // Group by owner (user ID)
+                maxAmount: { $first: "$amount" }, // Get the highest score for each user
+                username: { $first: "$ownerDetails.username" } // Keep username
+            }
         },
         {
             $project: {
-                username: "$ownerDetails.username",
+                _id: 0, // Exclude MongoDB's default _id field
+                username: 1,
                 amount: "$maxAmount"
             }
         },
         {
-            $sort: { amount: -1 } // Sort again to ensure proper order after grouping
+            $sort: { amount: -1 } // Sort again to maintain order after grouping
         },
-        { $limit: 10 } // Limit to top 10 results
+        { $limit: 10 } // Get top 10 users
     ]);
 
     return res.json({ message: "success", data: result });

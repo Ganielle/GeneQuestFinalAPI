@@ -45,7 +45,8 @@ exports.authlogin = async(req, res) => {
                 return res.json({message: "success", data: {
                     auth: "player",
                     token: jwtoken,
-                    gender: tempdata.gender
+                    gender: tempdata.gender,
+                    section: tempdata.section
                 }})
             })
             .catch(err => res.status(400).json({ message: "bad-request2", data: "There's a problem with your account! There's a problem with your account! Please contact customer support for more details."  + err }))
