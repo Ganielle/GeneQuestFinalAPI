@@ -84,7 +84,7 @@ exports.authteacherlogin = async(req, res) => {
                 }
 
                 return res.json({message: "success", data: {
-                    auth: "Teacher",
+                    auth: user.auth,
                     token: jwtoken
                 }})
             })
@@ -123,7 +123,7 @@ exports.authsuperadminlogin = async(req, res) => {
                 }
 
                 return res.json({message: "success", data: {
-                    auth: "Superadmin",
+                    auth: user.auth,
                     token: jwtoken
                 }})
             })

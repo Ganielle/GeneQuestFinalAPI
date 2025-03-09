@@ -158,14 +158,14 @@ exports.createuser = async (req, res) => {
 exports.listusers = async (req, res) => {
     const {id} = req.user
 
-    const {page, limit} = req.query
+    const {page, limit, section} = req.query
 
     const pageOptions = {
         page: parseInt(page) || 0,
         limit: parseInt(limit) || 10,
     };
 
-    const teachers = await Users.find()
+    const teachers = await Users.find({section: section})
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .then(data => data)
@@ -175,7 +175,7 @@ exports.listusers = async (req, res) => {
         return res.status(400).json({message: "bad-request", data: "There's a problem with the server! Please contact customer support for more details"})
     })
 
-    const totalteachers = await Users.countDocuments()
+    const totalteachers = await Users.countDocuments({section: section})
     .then(data => data)
     .catch(err => {
         console.log(`There's a problem getting users count. Error ${err}`)
