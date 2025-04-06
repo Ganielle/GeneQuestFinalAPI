@@ -150,8 +150,7 @@ exports.getleaderboard = async (req, res) => {
         },
         {
             $sort: { amount: -1 } // Sort again to maintain order after grouping
-        },
-        { $limit: 10 } // Get top 10 users
+        }
     ]);
 
     return res.json({ message: "success", data: result });
