@@ -3,6 +3,7 @@ const Users = require("../models/Users")
 const Unlock = require("../models/Unlock")
 const Score = require("../models/Score")
 const Stagescore = require("../models/Stagescore")
+const Staffusers = require("../models/Staffusers")
 
 exports.createuser = async (req, res) => {
     const {username, password, gender, section} = req.body
@@ -294,6 +295,22 @@ exports.unlockstages = async (req, res) => {
 
         return res.status(400).json({message: "bad-request", data: "There's a problem with the server. Please try again later"})
     })
+
+    return res.json({message: "success"})
+}
+
+exports.resetdatabase = async (req, res) => {
+    const {id} = req.user
+
+    await Users.deleteMany()
+
+    await Unlock.deleteMany()
+
+    await Stagescore.deleteMany()
+
+    await Staffusers.deleteMany({ username: {$ne: "genequestadmin"}})
+
+    await Score.deleteMany()
 
     return res.json({message: "success"})
 }
