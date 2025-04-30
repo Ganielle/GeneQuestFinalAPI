@@ -4,6 +4,8 @@ const Unlock = require("../models/Unlock")
 const Score = require("../models/Score")
 const Stagescore = require("../models/Stagescore")
 const Staffusers = require("../models/Staffusers")
+const AnswerPunettSquare = require("../models/AnswerPunettSquare")
+const Multiplechoiceanswer = require("../models/Multiplechoiceanswer")
 
 exports.createuser = async (req, res) => {
     const {username, password, gender, section} = req.body
@@ -257,7 +259,7 @@ exports.getlockedstages = async (req, res) => {
 
 exports.unlockstages = async (req, res) => {
     const {id} = req.user
-    const {level, stage, score} = req.body
+    const {level, stage, score, punnettsquareanswer, multiplechoiceanswer, punnettsquaretype} = req.body
 
     await Unlock.findOneAndUpdate({owner: new mongoose.Types.ObjectId(id), level: level, stage: stage}, {locked: 0})
     .catch(err => {
@@ -292,6 +294,34 @@ exports.unlockstages = async (req, res) => {
     await Stagescore.findOneAndUpdate({owner: new mongoose.Types.ObjectId(id), level: level, stage: (stage - 1)}, {score: score})
     .catch(err => {
         console.log(`There's a problem saving score data for id: ${id}  level: ${level}  stage: ${stage}  score: ${score}. Error: ${err}`)
+
+        return res.status(400).json({message: "bad-request", data: "There's a problem with the server. Please try again later"})
+    })
+
+    const tempsquareanswer = Object.entries(JSON.parse(punnettsquareanswer)).map(
+        ([key, value]) => ({
+          index: key,
+          data: value
+        })
+    );
+
+    await AnswerPunettSquare.create({owner: new mongoose.Types.ObjectId(id), level: level, stage: stage - 1, type: punnettsquaretype, answer: tempsquareanswer})
+    .catch(err => {
+        console.log(`There's a problem saving punnett square answer data for id: ${id}  level: ${level}  stage: ${stage}  answer: ${punnettsquareanswer}. Error: ${err}`)
+
+        return res.status(400).json({message: "bad-request", data: "There's a problem with the server. Please try again later"})
+    })
+
+    const tempmultiplechoice = Object.entries(JSON.parse(multiplechoiceanswer)).map(
+        ([key, value]) => ({
+          index: key,
+          data: value
+        })
+    );
+
+    await Multiplechoiceanswer.create({owner: new mongoose.Types.ObjectId(id), level: level, stage: stage - 1, answer: tempmultiplechoice})
+    .catch(err => {
+        console.log(`There's a problem saving multiple choice answer data for id: ${id}  level: ${level}  stage: ${stage}  answer: ${punnettsquareanswer}. Error: ${err}`)
 
         return res.status(400).json({message: "bad-request", data: "There's a problem with the server. Please try again later"})
     })

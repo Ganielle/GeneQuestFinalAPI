@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const AnswerPunettSquareSchema = new mongoose.Schema(
+const multiplechoiceanswerSchema = new mongoose.Schema(
     {
         owner: {
             type: mongoose.Schema.Types.ObjectId,
@@ -12,9 +12,6 @@ const AnswerPunettSquareSchema = new mongoose.Schema(
         },
         stage: {
             type: Number
-        },
-        type: {
-            type: String
         },
         answer: [{
             index: {
@@ -30,5 +27,5 @@ const AnswerPunettSquareSchema = new mongoose.Schema(
     }
 )
 
-const AnswerPunettSquare = mongoose.model("AnswerPunettSquare", AnswerPunettSquareSchema)
-module.exports = AnswerPunettSquare
+const Multiplechoiceanswer = mongoose.model("Multiplechoiceanswer", multiplechoiceanswerSchema)
+module.exports = Multiplechoiceanswer
